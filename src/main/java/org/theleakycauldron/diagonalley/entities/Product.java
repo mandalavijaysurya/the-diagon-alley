@@ -21,12 +21,13 @@ import java.util.List;
 public class Product extends BaseModel{
     private String name;
     private String description;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Price price;
+    @Column(length = 1000)
     private String imageURL;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private ProductCategory productCategory;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Manufacturer manufacturer;
     @ElementCollection
     @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))

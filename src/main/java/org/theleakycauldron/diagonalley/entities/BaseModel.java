@@ -20,9 +20,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public abstract class BaseModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @UUIDV6Generator
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private long id;
+    private UUID uuid;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isDeleted;

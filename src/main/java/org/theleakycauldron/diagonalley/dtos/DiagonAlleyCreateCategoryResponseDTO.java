@@ -1,10 +1,8 @@
-package org.theleakycauldron.diagonalley.entities;
+package org.theleakycauldron.diagonalley.dtos;
 
-
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -13,10 +11,10 @@ import lombok.experimental.SuperBuilder;
  * @github: github/mandalavijaysurya (<a href="https://www.github.com/mandalavijaysurya"> Github</a>)
  */
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @SuperBuilder
-public class Manufacturer extends BaseModel {
-    private String name;
+@AllArgsConstructor
+@Getter
+@Setter
+public class DiagonAlleyCreateCategoryResponseDTO extends DiagonAlleyResponseDTO {
+    private String response;
 }

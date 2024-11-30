@@ -2,6 +2,9 @@ package org.theleakycauldron.diagonalley.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.theleakycauldron.diagonalley.entities.ProductCategory;
+
+import java.util.Optional;
 
 /**
  * @author: Vijaysurya Mandala
@@ -9,5 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface DiagonAlleyRepository extends JpaRepository<Object, Object> {
+public interface DiagonAlleyRDBCategoryRepository extends JpaRepository<ProductCategory, Long> {
+
+    Optional<ProductCategory> findByName(String name);
 }

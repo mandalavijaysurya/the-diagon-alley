@@ -1,9 +1,7 @@
 package org.theleakycauldron.diagonalley.entities;
 
-import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -11,12 +9,15 @@ import lombok.experimental.SuperBuilder;
  * @github: github/mandalavijaysurya (<a href="https://www.github.com/mandalavijaysurya"> Github</a>)
  */
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @SuperBuilder
-@Entity
-public class ProductCategory extends BaseModel{
-    private String name;
-
+@ToString
+public class Outbox extends BaseModel {
+    @OneToOne(fetch = FetchType.EAGER)
+    private Product product;
+    private boolean isPersisted;
 }

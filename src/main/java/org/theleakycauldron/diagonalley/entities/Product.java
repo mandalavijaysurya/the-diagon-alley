@@ -25,9 +25,11 @@ public class Product extends BaseModel{
     private Price price;
     @Column(length = 1000)
     private String imageURL;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private ProductCategory productCategory;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "manufacturer_id")
     private Manufacturer manufacturer;
     @ElementCollection
     @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))

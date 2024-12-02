@@ -1,9 +1,6 @@
 package org.theleakycauldron.diagonalley.services;
 
-import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateCategoryRequestDTO;
-import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateCategoryResponseDTO;
-import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateProductRequestDTO;
-import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateProductResponseDTO;
+import org.theleakycauldron.diagonalley.dtos.*;
 
 /**
  * @author: Vijaysurya Mandala
@@ -13,4 +10,5 @@ import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateProductResponseDTO
 public interface DiagonAlleyService {
     DiagonAlleyCreateProductResponseDTO addProduct(DiagonAlleyCreateProductRequestDTO requestDTO);
     DiagonAlleyCreateCategoryResponseDTO addCategory(DiagonAlleyCreateCategoryRequestDTO requestDTO);
+    DiagonAlleyUpdateProductResponseDTO updateProduct(DiagonAlleyUpdateProductRequestDTO requestDTO);
 }

@@ -1,6 +1,8 @@
 package org.theleakycauldron.diagonalley.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,11 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 @Entity
+@Table(
+        indexes = {
+                @Index(name = "idx_category_uuid", columnList = "uuid")
+        }
+)
 public class ProductCategory extends BaseModel{
     private String name;
-
 }

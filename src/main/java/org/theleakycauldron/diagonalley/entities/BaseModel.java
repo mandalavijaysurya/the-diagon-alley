@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.theleakycauldron.diagonalley.annotations.UUIDV6Generator;
 
@@ -19,6 +20,7 @@ import java.util.UUID;
 @SuperBuilder
 @MappedSuperclass
 @Getter
+@Setter
 @NoArgsConstructor
 public abstract class BaseModel {
     @Id

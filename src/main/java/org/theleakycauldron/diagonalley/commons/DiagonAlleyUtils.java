@@ -22,5 +22,4 @@ public class DiagonAlleyUtils {
                 .rating(product.getRating())
                 .build();
     }
-
 }

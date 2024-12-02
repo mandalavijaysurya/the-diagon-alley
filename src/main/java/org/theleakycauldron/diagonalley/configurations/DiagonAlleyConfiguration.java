@@ -19,7 +19,10 @@ public class DiagonAlleyConfiguration {
     }
 
     @Bean
-    public NewTopic createTopics(){
-        return new NewTopic("diagon-alley", 1, (short) 1);
+    public KafkaAdmin.NewTopics createTopics(){
+        NewTopic diagonAlleyCreate = new NewTopic("diagon-alley-create", 1, (short) 1);
+        NewTopic diagonAlleyUpdate = new NewTopic("diagon-alley-update", 1, (short) 1);
+
+        return new KafkaAdmin.NewTopics(diagonAlleyCreate, diagonAlleyUpdate);
     }
 }

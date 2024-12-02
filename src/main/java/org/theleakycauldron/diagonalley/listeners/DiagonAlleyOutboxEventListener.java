@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.theleakycauldron.diagonalley.commons.DiagonAlleyUtils;
 import org.theleakycauldron.diagonalley.dtos.DiagonAlleyKafkaRequestDTO;
+import org.theleakycauldron.diagonalley.dtos.OutboxEventDTO;
 import org.theleakycauldron.diagonalley.entities.Outbox;
 import org.theleakycauldron.diagonalley.repositories.DiagonAlleyRDBOutboxRepository;
 
@@ -20,11 +21,11 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
-public class DigaonAlleyOutboxEventListener {
+public class DiagonAlleyOutboxEventListener {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final DiagonAlleyRDBOutboxRepository outboxRepository;
 
-    public DigaonAlleyOutboxEventListener(
+    public DiagonAlleyOutboxEventListener(
             KafkaTemplate<String, String> kafkaTemplate,
             DiagonAlleyRDBOutboxRepository outboxRepository
     ){
@@ -34,11 +35,17 @@ public class DigaonAlleyOutboxEventListener {
 
     @Transactional
     @EventListener
-    public void publishOutboxEvent(Outbox outbox){
+    public void publishOutboxCreateEvent(OutboxEventDTO outboxEventDTO){
+        Outbox outbox = outboxEventDTO.getOutbox();
+        boolean isUpdate = outboxEventDTO.isUpdated();
+        log.info("Listening to outbox event :: {}", outbox.toString());
         try{
-            log.info("Listening to outbox event :: {}", outbox.toString());
             DiagonAlleyKafkaRequestDTO kafkaRequestDTO = DiagonAlleyUtils.convertProductToKafkaRequestDTO(outbox.getProduct());
-            CompletableFuture<SendResult<String, String>> kafkaMessage = kafkaTemplate.send("diagon-alley", kafkaRequestDTO.toString());
+            CompletableFuture<SendResult<String, String>> kafkaMessage = null;
+            if(!isUpdate)
+                kafkaMessage = kafkaTemplate.send("diagon-alley-create", kafkaRequestDTO.toString());
+            else
+                kafkaMessage = kafkaTemplate.send("diagon-alley-update", kafkaRequestDTO.toString());
             kafkaMessage.whenComplete((result, ex) -> {
                 if(ex != null)  throw new RuntimeException(ex.getMessage());
             });
@@ -48,4 +55,5 @@ public class DigaonAlleyOutboxEventListener {
             throw new RuntimeException(ex.getMessage());
         }
     }
+
 }

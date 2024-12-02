@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -18,6 +19,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
+@Table(
+        indexes = {
+                @Index(name = "idx_product_uuid", columnList = "uuid")
+        }
+)
 public class Product extends BaseModel{
     private String name;
     private String description;

@@ -1,20 +1,11 @@
 package org.theleakycauldron.diagonalley.services.implementations;
 
 import com.fasterxml.uuid.impl.TimeBasedReorderedGenerator;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.theleakycauldron.diagonalley.commons.DiagonAlleyUtils;
 import org.theleakycauldron.diagonalley.dtos.*;
 import org.theleakycauldron.diagonalley.entities.*;
-import org.theleakycauldron.diagonalley.exceptions.CategoryAlreadyExistsException;
-import org.theleakycauldron.diagonalley.exceptions.CategoryNotFoundException;
-import org.theleakycauldron.diagonalley.exceptions.ProductAlreadyExistsException;
-import org.theleakycauldron.diagonalley.repositories.DiagonAlleyRDBCategoryRepository;
-import org.theleakycauldron.diagonalley.repositories.DiagonAlleyRDBOutboxRepository;
-import org.theleakycauldron.diagonalley.repositories.DiagonAlleyRDBProductRepository;
+import org.theleakycauldron.diagonalley.exceptions.*;
+import org.theleakycauldron.diagonalley.repositories.*;
 import org.theleakycauldron.diagonalley.services.DiagonAlleyService;
 
 import java.time.LocalDateTime;
@@ -37,18 +28,25 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
     private final TimeBasedReorderedGenerator timeBasedReorderedGenerator;
     private final DiagonAlleyRDBOutboxRepository diagonAlleyRDBOutboxRepository;
     private final DiagonAlleyOutboxEventPublisher diagonAlleyOutboxEventPublisher;
+    private final DiagonAlleyRDBManufacturerRepository  diagonAlleyRDBManufacturerRepository;
+    private final DiagonAlleyRDBPriceRepository diagonAlleyRDBPriceRepository;
+
     public DiagonAlleyServiceImpl(
             DiagonAlleyRDBProductRepository diagonAlleyRDBProductRepository,
             DiagonAlleyRDBCategoryRepository diagonAlleyRDBCategoryRepository,
             TimeBasedReorderedGenerator timeBasedReorderedGenerator,
             DiagonAlleyRDBOutboxRepository diagonAlleyRDBOutboxRepository,
-            DiagonAlleyOutboxEventPublisher diagonAlleyOutboxEventPublisher
+            DiagonAlleyOutboxEventPublisher diagonAlleyOutboxEventPublisher,
+            DiagonAlleyRDBManufacturerRepository diagonAlleyRDBManufacturerRepository,
+            DiagonAlleyRDBPriceRepository diagonAlleyRDBPriceRepository
     ) {
         this.diagonAlleyRDBProductRepository = diagonAlleyRDBProductRepository;
         this.diagonAlleyRDBCategoryRepository = diagonAlleyRDBCategoryRepository;
         this.timeBasedReorderedGenerator = timeBasedReorderedGenerator;
         this.diagonAlleyRDBOutboxRepository = diagonAlleyRDBOutboxRepository;
         this.diagonAlleyOutboxEventPublisher = diagonAlleyOutboxEventPublisher;
+        this.diagonAlleyRDBManufacturerRepository = diagonAlleyRDBManufacturerRepository;
+        this.diagonAlleyRDBPriceRepository = diagonAlleyRDBPriceRepository;
     }
 
 
@@ -114,6 +112,7 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
         return DiagonAlleyCreateProductResponseDTO.builder()
                 .createdAt(now)
                 .response("Product: " + productName + " has been created")
+                .uuid(savedOutbox.getUuid().toString())
                 .build();
     }
 
@@ -136,6 +135,76 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
         diagonAlleyRDBCategoryRepository.save(newCategory);
         return DiagonAlleyCreateCategoryResponseDTO.builder()
                 .response(category)
+                .createdAt(now)
+                .build();
+    }
+
+    @Override
+    public DiagonAlleyUpdateProductResponseDTO updateProduct(DiagonAlleyUpdateProductRequestDTO requestDTO) {
+        Optional<Product> productOptional;
+        if(requestDTO.getUuid() != null){
+            productOptional = diagonAlleyRDBProductRepository.findByUuid(UUID.fromString(requestDTO.getUuid()));
+        }else if(requestDTO.getName() != null && !requestDTO.getName().isBlank()){
+            productOptional = diagonAlleyRDBProductRepository.findByName(requestDTO.getName());
+        }
+        else{
+            throw new RuntimeException("Specify either UUID or product name");
+        }
+        if(productOptional.isEmpty()){
+            throw new ProductNotFoundException("Could not update product, product does not exist");
+        }
+        LocalDateTime now = now();
+        Product product = productOptional.get();
+        String description = requestDTO.getDescription();
+        String imageUrl = requestDTO.getImageUrl();
+        String manufacturer = requestDTO.getManufacturer();
+        String name = requestDTO.getName();
+        double price = requestDTO.getPrice();
+        double discount = requestDTO.getDiscount();
+        double rating = requestDTO.getRating();
+        List<String> tags = requestDTO.getTags();
+        if(name != null){
+            product.setName(name);
+        }
+        if(description != null){
+            product.setDescription(description);
+        }
+        if(imageUrl != null){
+            product.setImageURL(imageUrl);
+        }
+        if(manufacturer != null){
+            diagonAlleyRDBManufacturerRepository.delete(product.getManufacturer());
+            Manufacturer manufacturer1 = Manufacturer.builder()
+                    .name(manufacturer)
+                    .createdAt(now)
+                    .updatedAt(now)
+                    .build();
+            product.setManufacturer(manufacturer1);
+        }
+        if(price != 0){
+            diagonAlleyRDBPriceRepository.delete(product.getPrice());
+            Price price1 = Price.builder()
+                    .amount(price)
+                    .discount(discount)
+                    .createdAt(now)
+                    .updatedAt(now)
+                    .build();
+            product.setPrice(price1);
+        }
+        if(rating != 0){
+            product.setRating(rating);
+        }
+        if(tags != null){
+            product.setTags(tags);
+        }
+        product.setUpdatedAt(now);
+        Product updatedProduct = diagonAlleyRDBProductRepository.save(product);
+        diagonAlleyOutboxEventPublisher.publishOutboxUpdateEvent(product.getUuid());
+
+
+        return DiagonAlleyUpdateProductResponseDTO.builder()
+                .response("Product: " + updatedProduct.getName() + " has been updated")
+                .uuid(updatedProduct.getUuid().toString())
                 .createdAt(now)
                 .build();
     }

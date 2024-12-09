@@ -15,4 +15,5 @@ import org.theleakycauldron.diagonalley.entities.Outbox;
 public class OutboxEventDTO {
     private Outbox outbox;
     private boolean isUpdated;
+    private boolean isDeleted;
 }

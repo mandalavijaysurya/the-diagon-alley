@@ -11,4 +11,5 @@ public interface DiagonAlleyService {
     DiagonAlleyCreateProductResponseDTO addProduct(DiagonAlleyCreateProductRequestDTO requestDTO);
     DiagonAlleyCreateCategoryResponseDTO addCategory(DiagonAlleyCreateCategoryRequestDTO requestDTO);
     DiagonAlleyUpdateProductResponseDTO updateProduct(DiagonAlleyUpdateProductRequestDTO requestDTO);
+    DiagonAlleyDeleteProductResponseDTO deleteProduct(DiagonAlleyDeleteProductRequestDTO requestDTO);
 }

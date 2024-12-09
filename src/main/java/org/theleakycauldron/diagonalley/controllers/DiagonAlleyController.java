@@ -1,16 +1,24 @@
 package org.theleakycauldron.diagonalley.controllers;
 
-import jakarta.validation.Valid;
+import java.net.URISyntaxException;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.theleakycauldron.diagonalley.dtos.*;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateCategoryRequestDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateProductRequestDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyCreateProductResponseDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyDeleteProductRequestDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyDeleteProductResponseDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyResponseDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyUpdateProductRequestDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyUpdateProductResponseDTO;
 import org.theleakycauldron.diagonalley.services.DiagonAlleyService;
 
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
+import jakarta.validation.Valid;
 
 /**
  * @author: Vijaysurya Mandala
@@ -45,6 +53,12 @@ public class DiagonAlleyController {
     public ResponseEntity<DiagonAlleyResponseDTO> modifyCategory(@RequestBody @Valid DiagonAlleyUpdateProductRequestDTO requestDTO){
         DiagonAlleyUpdateProductResponseDTO responseDTO = diagonAlleyService.updateProduct(requestDTO);
         responseDTO.setStatusCode(200);
+        return ResponseEntity.status(200).body(responseDTO);
+    }
+
+    @DeleteMapping("/product")
+    public ResponseEntity<DiagonAlleyDeleteProductResponseDTO> deleteProduct(@RequestBody @Valid DiagonAlleyDeleteProductRequestDTO requestDTO){
+        DiagonAlleyDeleteProductResponseDTO responseDTO = diagonAlleyService.deleteProduct(requestDTO);
         return ResponseEntity.status(200).body(responseDTO);
     }
 }

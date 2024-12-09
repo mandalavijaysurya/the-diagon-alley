@@ -1,9 +1,9 @@
-package org.theleakycauldron.diagonalley.entities;
+package org.theleakycauldron.diagonalley.dtos;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -11,11 +11,12 @@ import lombok.experimental.SuperBuilder;
  * @github: github/mandalavijaysurya (<a href="https://www.github.com/mandalavijaysurya"> Github</a>)
  */
 
+@SuperBuilder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@SuperBuilder
-@Entity
-public class ProductCategory extends BaseModel{
-    private String name;
+public class DiagonAlleyUpdateProductResponseDTO extends DiagonAlleyResponseDTO {
+    private String response;
+    private String uuid;
 }

@@ -59,4 +59,26 @@ public class DiagonAlleyOutboxEventPublisher implements ApplicationEventPublishe
         applicationEventPublisher.publishEvent(outboxEventDTO);
     }
 
+    /**
+     * Creates a publish out box event for delete operation
+     * 
+     * @param uuid
+     */
+
+    // TODO: verify this code
+    public void publishOutboxDeleteEvent(UUID uuid){
+        Optional<Outbox> persistedOutbox = diagonAlleyRDBOutboxRepository.findByUuid(uuid);
+        if(persistedOutbox.isEmpty()){
+            throw new OutboxNotExistsException("Outbox with uuid: "+uuid+" does not exist");
+        }
+        Outbox outbox = persistedOutbox.get();
+        outbox.setPersisted(false);
+
+        OutboxEventDTO outboxEventDTO = OutboxEventDTO.builder()
+                .outbox(outbox)
+                .isDeleted(true)
+                .build();
+        applicationEventPublisher.publishEvent(outboxEventDTO);
+    }
+
 }

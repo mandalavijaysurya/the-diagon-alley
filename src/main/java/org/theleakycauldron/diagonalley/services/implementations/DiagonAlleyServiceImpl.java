@@ -108,7 +108,7 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
                 .updatedAt(now)
                 .build();
         Outbox savedOutbox = diagonAlleyRDBOutboxRepository.save(outbox);
-        diagonAlleyOutboxEventPublisher.publishOutboxEvent(savedOutbox);
+//        diagonAlleyOutboxEventPublisher.publishOutboxEvent(savedOutbox);
         return DiagonAlleyCreateProductResponseDTO.builder()
                 .createdAt(now)
                 .response("Product: " + productName + " has been created")
@@ -199,9 +199,7 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
         }
         product.setUpdatedAt(now);
         Product updatedProduct = diagonAlleyRDBProductRepository.save(product);
-        diagonAlleyOutboxEventPublisher.publishOutboxUpdateEvent(product.getUuid());
-
-
+//        diagonAlleyOutboxEventPublisher.publishOutboxUpdateEvent(product.getUuid());
         return DiagonAlleyUpdateProductResponseDTO.builder()
                 .response("Product: " + updatedProduct.getName() + " has been updated")
                 .uuid(updatedProduct.getUuid().toString())

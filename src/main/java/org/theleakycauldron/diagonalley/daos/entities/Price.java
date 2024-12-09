@@ -1,4 +1,4 @@
-package org.theleakycauldron.diagonalley.entities;
+package org.theleakycauldron.diagonalley.daos.entities;
 
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;

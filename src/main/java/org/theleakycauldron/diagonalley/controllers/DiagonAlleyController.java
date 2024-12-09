@@ -2,10 +2,7 @@ package org.theleakycauldron.diagonalley.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.theleakycauldron.diagonalley.dtos.*;
 import org.theleakycauldron.diagonalley.services.DiagonAlleyService;
 
@@ -45,6 +42,12 @@ public class DiagonAlleyController {
     public ResponseEntity<DiagonAlleyResponseDTO> modifyCategory(@RequestBody @Valid DiagonAlleyUpdateProductRequestDTO requestDTO){
         DiagonAlleyUpdateProductResponseDTO responseDTO = diagonAlleyService.updateProduct(requestDTO);
         responseDTO.setStatusCode(200);
+        return ResponseEntity.status(200).body(responseDTO);
+    }
+
+    @GetMapping("/product")
+    public ResponseEntity<DiagonAlleyGetProductsResponseDTO> getProductByName(@RequestParam String query){
+        DiagonAlleyGetProductsResponseDTO responseDTO = diagonAlleyService.getProductByKeywords(query);
         return ResponseEntity.status(200).body(responseDTO);
     }
 }

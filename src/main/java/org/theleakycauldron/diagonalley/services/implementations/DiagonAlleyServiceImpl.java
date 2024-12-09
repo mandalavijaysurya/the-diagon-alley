@@ -2,16 +2,15 @@ package org.theleakycauldron.diagonalley.services.implementations;
 
 import com.fasterxml.uuid.impl.TimeBasedReorderedGenerator;
 import org.springframework.stereotype.Service;
+import org.theleakycauldron.diagonalley.commons.DiagonAlleyUtils;
 import org.theleakycauldron.diagonalley.dtos.*;
-import org.theleakycauldron.diagonalley.entities.*;
+import org.theleakycauldron.diagonalley.daos.entities.*;
 import org.theleakycauldron.diagonalley.exceptions.*;
 import org.theleakycauldron.diagonalley.repositories.*;
 import org.theleakycauldron.diagonalley.services.DiagonAlleyService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static java.time.LocalDateTime.now;
 
@@ -30,6 +29,7 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
     private final DiagonAlleyOutboxEventPublisher diagonAlleyOutboxEventPublisher;
     private final DiagonAlleyRDBManufacturerRepository  diagonAlleyRDBManufacturerRepository;
     private final DiagonAlleyRDBPriceRepository diagonAlleyRDBPriceRepository;
+    private final DiagonAlleyElasticProductRepository diagonAlleyElasticProductRepository;
 
     public DiagonAlleyServiceImpl(
             DiagonAlleyRDBProductRepository diagonAlleyRDBProductRepository,
@@ -38,7 +38,8 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
             DiagonAlleyRDBOutboxRepository diagonAlleyRDBOutboxRepository,
             DiagonAlleyOutboxEventPublisher diagonAlleyOutboxEventPublisher,
             DiagonAlleyRDBManufacturerRepository diagonAlleyRDBManufacturerRepository,
-            DiagonAlleyRDBPriceRepository diagonAlleyRDBPriceRepository
+            DiagonAlleyRDBPriceRepository diagonAlleyRDBPriceRepository,
+            DiagonAlleyElasticProductRepository diagonAlleyElasticProductRepository
     ) {
         this.diagonAlleyRDBProductRepository = diagonAlleyRDBProductRepository;
         this.diagonAlleyRDBCategoryRepository = diagonAlleyRDBCategoryRepository;
@@ -47,11 +48,12 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
         this.diagonAlleyOutboxEventPublisher = diagonAlleyOutboxEventPublisher;
         this.diagonAlleyRDBManufacturerRepository = diagonAlleyRDBManufacturerRepository;
         this.diagonAlleyRDBPriceRepository = diagonAlleyRDBPriceRepository;
+        this.diagonAlleyElasticProductRepository = diagonAlleyElasticProductRepository;
     }
 
 
     @Override
-    public DiagonAlleyCreateProductResponseDTO addProduct(DiagonAlleyCreateProductRequestDTO requestDTO) {
+    public DiagonAlleyCreateProductResponseDTO addProduct(DiagonAlleyCreateProductRequestDTO requestDTO) throws CategoryNotFoundException, ProductAlreadyExistsException{
         String productName = requestDTO.getName();
         String category = requestDTO.getProductCategory();
         UUID productUuid = timeBasedReorderedGenerator.generate();
@@ -199,11 +201,26 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
         }
         product.setUpdatedAt(now);
         Product updatedProduct = diagonAlleyRDBProductRepository.save(product);
-//        diagonAlleyOutboxEventPublisher.publishOutboxUpdateEvent(product.getUuid());
+//        diagonAlleyOutboxEventPublisher.publishOutboxUpdateEvent(product.getUuid())s
         return DiagonAlleyUpdateProductResponseDTO.builder()
                 .response("Product: " + updatedProduct.getName() + " has been updated")
                 .uuid(updatedProduct.getUuid().toString())
                 .createdAt(now)
                 .build();
     }
+
+    @Override
+    public DiagonAlleyGetProductsResponseDTO getProductByKeywords(String query) {
+         List<org.theleakycauldron.diagonalley.daos.documents.Product> products = diagonAlleyElasticProductRepository.findProductByTagsEquals(Arrays.stream(query.split(" ")).toList());
+         if(products.isEmpty()){
+             throw new ProductNotFoundException("Could not find product with the given tags");
+         }
+         DiagonAlleyUtils.convertProductToGetProductsResponseDTOs(products);
+            return DiagonAlleyGetProductsResponseDTO.builder()
+                    .diagonAlleyGetProductResponseDTOList(DiagonAlleyUtils.convertProductToGetProductsResponseDTOs(products).getDiagonAlleyGetProductResponseDTOList())
+                    .build();
+
+    }
+
+
 }

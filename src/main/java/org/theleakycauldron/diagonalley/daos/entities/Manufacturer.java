@@ -1,8 +1,7 @@
-package org.theleakycauldron.diagonalley.entities;
+package org.theleakycauldron.diagonalley.daos.entities;
+
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,16 +12,11 @@ import lombok.experimental.SuperBuilder;
  * @github: github/mandalavijaysurya (<a href="https://www.github.com/mandalavijaysurya"> Github</a>)
  */
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @SuperBuilder
-@Entity
-@Table(
-        indexes = {
-                @Index(name = "idx_category_uuid", columnList = "uuid")
-        }
-)
-public class ProductCategory extends BaseModel{
+@Getter
+public class Manufacturer extends BaseModel {
     private String name;
 }

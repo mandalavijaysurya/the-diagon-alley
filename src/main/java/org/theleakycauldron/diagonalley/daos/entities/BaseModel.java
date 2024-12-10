@@ -1,4 +1,4 @@
-package org.theleakycauldron.diagonalley.entities;
+package org.theleakycauldron.diagonalley.daos.entities;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.theleakycauldron.diagonalley.annotations.UUIDV6Generator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

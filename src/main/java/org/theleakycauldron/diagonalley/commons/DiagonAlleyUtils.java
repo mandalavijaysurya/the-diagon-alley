@@ -1,8 +1,12 @@
 package org.theleakycauldron.diagonalley.commons;
 
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyGetProductResponseDTO;
+import org.theleakycauldron.diagonalley.dtos.DiagonAlleyGetProductsResponseDTO;
 import org.theleakycauldron.diagonalley.dtos.DiagonAlleyKafkaRequestDTO;
-import org.theleakycauldron.diagonalley.entities.Outbox;
-import org.theleakycauldron.diagonalley.entities.Product;
+import org.theleakycauldron.diagonalley.daos.entities.Product;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: Vijaysurya Mandala
@@ -20,6 +24,26 @@ public class DiagonAlleyUtils {
                 .manufacturer(product.getManufacturer().getName())
                 .tags(product.getTags())
                 .rating(product.getRating())
+                .build();
+    }
+
+    public static DiagonAlleyGetProductsResponseDTO convertProductToGetProductsResponseDTOs(List<org.theleakycauldron.diagonalley.daos.documents.Product> products) {
+        List<DiagonAlleyGetProductResponseDTO> dtos = products.stream().map(
+                product -> DiagonAlleyGetProductResponseDTO.builder()
+                        .name(product.getProductName())
+                        .description(product.getProductDescription())
+                        .amount(product.getProductPrice())
+                        .discount(product.getDiscount())
+                        .imageURL(product.getImageUrl())
+                        .productCategory(product.getProductCategory())
+                        .manufacturer(product.getManufacturerName())
+                        .tags(product.getTags())
+                        .rating(product.getRating())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return DiagonAlleyGetProductsResponseDTO.builder()
+                .diagonAlleyGetProductResponseDTOList(dtos)
                 .build();
     }
 }

@@ -2,7 +2,7 @@ package org.theleakycauldron.diagonalley.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.theleakycauldron.diagonalley.entities.Price;
+import org.theleakycauldron.diagonalley.daos.entities.Price;
 
 /**
  * @author: Vijaysurya Mandala

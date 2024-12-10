@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 import org.theleakycauldron.diagonalley.dtos.OutboxEventDTO;
-import org.theleakycauldron.diagonalley.entities.Outbox;
+import org.theleakycauldron.diagonalley.daos.entities.Outbox;
 import org.theleakycauldron.diagonalley.exceptions.OutboxNotExistsException;
 import org.theleakycauldron.diagonalley.repositories.DiagonAlleyRDBOutboxRepository;
 

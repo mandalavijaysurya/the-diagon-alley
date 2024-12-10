@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.theleakycauldron.diagonalley.commons.DiagonAlleyUtils;
 import org.theleakycauldron.diagonalley.dtos.DiagonAlleyKafkaRequestDTO;
 import org.theleakycauldron.diagonalley.dtos.OutboxEventDTO;
-import org.theleakycauldron.diagonalley.entities.Outbox;
+import org.theleakycauldron.diagonalley.daos.entities.Outbox;
 import org.theleakycauldron.diagonalley.repositories.DiagonAlleyRDBOutboxRepository;
 
 import java.util.concurrent.CompletableFuture;

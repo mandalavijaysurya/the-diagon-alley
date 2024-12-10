@@ -49,6 +49,12 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
+		<!-- Elastic Search dependency -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-elasticsearch</artifactId>
+		</dependency>
+
 		<!-- Misc Dependencies -->
 		<dependency>
 			<groupId>org.postgresql</groupId>

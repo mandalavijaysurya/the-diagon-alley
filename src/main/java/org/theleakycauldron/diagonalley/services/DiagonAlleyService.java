@@ -12,4 +12,5 @@ public interface DiagonAlleyService {
     DiagonAlleyCreateCategoryResponseDTO addCategory(DiagonAlleyCreateCategoryRequestDTO requestDTO);
     DiagonAlleyUpdateProductResponseDTO updateProduct(DiagonAlleyUpdateProductRequestDTO requestDTO);
     DiagonAlleyDeleteProductResponseDTO deleteProduct(DiagonAlleyDeleteProductRequestDTO requestDTO);
+    DiagonAlleyGetProductsResponseDTO getProductByKeywords(String query);
 }

@@ -1,13 +1,13 @@
 package org.theleakycauldron.diagonalley.controllers;
 
-import jakarta.validation.Valid;
+import java.net.URISyntaxException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.theleakycauldron.diagonalley.dtos.*;
 import org.theleakycauldron.diagonalley.services.DiagonAlleyService;
 
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
+import jakarta.validation.Valid;
 
 /**
  * @author: Vijaysurya Mandala
@@ -45,9 +45,17 @@ public class DiagonAlleyController {
         return ResponseEntity.status(200).body(responseDTO);
     }
 
+
+    @DeleteMapping("/product")
+    public ResponseEntity<DiagonAlleyDeleteProductResponseDTO> deleteProduct(@RequestBody @Valid DiagonAlleyDeleteProductRequestDTO requestDTO){
+        DiagonAlleyDeleteProductResponseDTO responseDTO = diagonAlleyService.deleteProduct(requestDTO);
+        return ResponseEntity.status(200).body(responseDTO);
+    }
+
     @GetMapping("/product")
     public ResponseEntity<DiagonAlleyGetProductsResponseDTO> getProductByName(@RequestParam String query){
         DiagonAlleyGetProductsResponseDTO responseDTO = diagonAlleyService.getProductByKeywords(query);
         return ResponseEntity.status(200).body(responseDTO);
     }
+
 }

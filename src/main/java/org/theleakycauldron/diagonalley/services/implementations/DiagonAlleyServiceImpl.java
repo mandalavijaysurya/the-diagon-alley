@@ -209,6 +209,32 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
                 .build();
     }
 
+    /**
+     * {@link DiagonAlleyDeleteProductRequestDTO}
+     * @param requestDTO which has the product Uuid that needs to be deleted
+     */
+
+    public DiagonAlleyDeleteProductResponseDTO deleteProduct(DiagonAlleyDeleteProductRequestDTO requestDTO){
+        UUID uuid = requestDTO.getUuid();
+        Optional<Product> previousProductOptional = diagonAlleyRDBProductRepository.findByUuid(uuid);
+        if(previousProductOptional.isEmpty()){
+            throw new ProductNotFoundException("Product not found");
+        }
+        Product previousProduct = previousProductOptional.get();
+        if(previousProduct.isDeleted()){
+            throw new ProductAlreadyDeletedException("Product already deleted!");
+        }
+
+        previousProduct.setDeleted(true);
+        diagonAlleyRDBProductRepository.save(previousProduct);
+
+        return DiagonAlleyDeleteProductResponseDTO.builder()
+                .createdAt(LocalDateTime.now())
+                .statusCode(200)
+                .message("Product deleted successfully in database")
+                .build();
+    }
+
     @Override
     public DiagonAlleyGetProductsResponseDTO getProductByKeywords(String query) {
          List<org.theleakycauldron.diagonalley.daos.documents.Product> products = diagonAlleyElasticProductRepository.findProductByTagsEquals(Arrays.stream(query.split(" ")).toList());
@@ -221,6 +247,5 @@ public class DiagonAlleyServiceImpl implements DiagonAlleyService {
                     .build();
 
     }
-
 
 }
